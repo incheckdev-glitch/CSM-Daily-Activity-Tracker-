@@ -2922,6 +2922,7 @@ function normalizeViewKey(view) {
   if (['payment_forecast', 'payment-forecast', 'paymentforecast', 'Payment Forecast', 'Receivables Forecast', 'receivables_forecast', 'paymentForecast'].includes(key)) return 'paymentForecast';
   if (['renewal_forecast', 'renewal-forecast', 'renewalforecast', 'Monthly Renewal Forecast', 'renewalForecast'].includes(key)) return 'renewalForecast';
   if (['biners', 'Biners', 'biners_module', 'biners-module', 'outsourcing', 'payables'].includes(key)) return 'biners';
+  if (['whiteLabelConfig', 'white_label_config', 'white-label-config', 'white_label', 'white-label', 'branding', 'configuration'].includes(key)) return 'whiteLabelConfig';
   return key;
 }
 
@@ -2953,7 +2954,7 @@ window.shouldShowTicketFilters = shouldShowTicketFilters;
 
 function setActiveView(view) {
  view = normalizeViewKey(view);
- const names = ['issues', 'calendar', 'insights', 'csm', 'company', 'contacts', 'leads', 'deals', 'proposals', 'agreements', 'operationsOnboarding', 'invoices', 'receipts', 'creditNotes', 'paymentForecast', 'renewalForecast', 'biners', 'lifecycleAnalytics', 'clients', 'proposalCatalog', 'communicationCentre', 'aiAssistant', 'notifications', 'notificationSetup', 'workflow', 'users', 'rolePermissions'];
+ const names = ['issues', 'calendar', 'insights', 'csm', 'company', 'contacts', 'leads', 'deals', 'proposals', 'agreements', 'operationsOnboarding', 'invoices', 'receipts', 'creditNotes', 'paymentForecast', 'renewalForecast', 'biners', 'lifecycleAnalytics', 'clients', 'proposalCatalog', 'communicationCentre', 'aiAssistant', 'notifications', 'notificationSetup', 'workflow', 'users', 'rolePermissions', 'whiteLabelConfig'];
  const requestedView = view;
  const firstAllowedView = names.find(name => Permissions.canAccessTab(name)) || '';
  if (!Permissions.canAccessTab(view)) {
@@ -3016,7 +3017,9 @@ function setActiveView(view) {
         ? E.workflowTab
         : name === 'users'
         ? E.usersTab
-        : E.rolePermissionsTab;
+        : name === 'rolePermissions'
+        ? E.rolePermissionsTab
+        : E.whiteLabelConfigTab;
     const panel =
       name === 'issues'
         ? E.issuesView
@@ -3070,7 +3073,9 @@ function setActiveView(view) {
         ? E.workflowView
         : name === 'users'
         ? E.usersView
-        : E.rolePermissionsView;
+        : name === 'rolePermissions'
+        ? E.rolePermissionsView
+        : E.whiteLabelConfigView;
     const active = name === view;
     if (tab) {
       tab.classList.toggle('active', active);
@@ -3184,6 +3189,9 @@ function setActiveView(view) {
         await NotificationSetup.load();
       }
     });
+  }
+  if (view === 'whiteLabelConfig' && window.WhiteLabelAdmin?.init) {
+    runViewLoader('white label configuration', () => window.WhiteLabelAdmin.init());
   }
   updatePrimaryActionButton(view);
   if (E.app) {
@@ -5393,7 +5401,8 @@ function wireCore() {
     E.notificationSetupTab,
     E.workflowTab,
     E.usersTab,
-    E.rolePermissionsTab
+    E.rolePermissionsTab,
+    E.whiteLabelConfigTab
   ].forEach(bindViewTab);
 
   document.addEventListener('click', event => {
@@ -5892,6 +5901,7 @@ function getAppHashForView(view = '') {
     notificationSetup: '#notification-settings',
     users: '#users',
     rolePermissions: '#role-permissions',
+    whiteLabelConfig: '#white-label-config',
     communicationCentre: '#communication_centre',
     communication_centre: '#communication_centre'
   };
@@ -5901,7 +5911,7 @@ function getAppHashForView(view = '') {
 function isNotificationDeepLinkHash(hash = '') {
   const value = String(hash || '').trim();
   if (!value || value === '#loginSection') return false;
-  return /^#(tickets|workflow|operations-onboarding|crm|finance|leads|deals|proposals|agreements|invoices|receipts|credit_notes|credit-notes|payment_forecast|payment-forecast|renewal_forecast|renewal-forecast|biners|communication_centre|communication-centre|communication_center)/i.test(value);
+  return /^#(tickets|workflow|operations-onboarding|crm|finance|leads|deals|proposals|agreements|invoices|receipts|credit_notes|credit-notes|payment_forecast|payment-forecast|renewal_forecast|renewal-forecast|biners|white-label-config|white_label_config|branding|configuration|communication_centre|communication-centre|communication_center)/i.test(value);
 }
 
 function capturePendingDeepLink() {
@@ -5946,6 +5956,7 @@ function parseAppHashRoute(hash = '') {
   if (route === 'crm') return { module: 'crm', resource: params.get('tab') || '', id: params.get('id') || '' };
   if (route === 'finance') return { module: 'finance', resource: params.get('tab') || '', id: params.get('id') || '' };
   if (route === 'clients' && params.get('tab') === 'renewal_forecast') return { module: 'clients', resource: 'renewal_forecast', id: '' };
+  if (['white-label-config', 'white_label_config', 'whiteLabelConfig', 'white-label', 'white_label', 'branding', 'configuration'].includes(route)) return { module: 'whiteLabelConfig', resource: 'white_label_settings', id: '' };
   if (['communication_centre', 'communication-centre', 'communication_center', 'communicationCentre'].includes(route)) return { module: 'communication_centre', resource: 'communication_centre', id: params.get('conversation_id') || params.get('conversationId') || params.get('id') || '' };
   return { module: route, resource: route, id: params.get('id') || '' };
 }
@@ -5987,6 +5998,13 @@ async function routeAppHashAfterReady() {
   if (target.resource === 'renewal_forecast') {
     if (Permissions.canAccessTab('renewalForecast')) { setActiveView('renewalForecast'); return true; }
     UI.toast?.('Access denied. This forecast is available for admin users only.');
+    const fallback = UI.tabRegistry?.().find(tab => Permissions.canAccessTab(tab.key))?.key || '';
+    if (fallback) setActiveView(fallback);
+    return false;
+  }
+  if (target.resource === 'white_label_settings') {
+    if (Permissions.canAccessTab('whiteLabelConfig')) { setActiveView('whiteLabelConfig'); return true; }
+    UI.toast?.('Access denied. White Label Configuration is available for admin/dev users only.');
     const fallback = UI.tabRegistry?.().find(tab => Permissions.canAccessTab(tab.key))?.key || '';
     if (fallback) setActiveView(fallback);
     return false;

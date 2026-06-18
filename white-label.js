@@ -71,9 +71,21 @@
     });
     return result;
   };
+  const readStoredPreviewConfig = () => {
+    try {
+      const raw = root.localStorage?.getItem?.('whiteLabel.runtimeConfig.v1');
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_error) {
+      return {};
+    }
+  };
+
   const directConfig = root.WHITE_LABEL_CONFIG || {};
+  const storedPreviewConfig = readStoredPreviewConfig();
   const runtimeConfig = root.RUNTIME_CONFIG?.WHITE_LABEL || root.RUNTIME_CONFIG?.BRAND || {};
-  const config = mergeDeep(mergeDeep(DEFAULTS, directConfig), runtimeConfig);
+  const config = mergeDeep(mergeDeep(mergeDeep(DEFAULTS, directConfig), storedPreviewConfig), runtimeConfig);
 
   const getPath = (path, fallback = '') => String(path || '').split('.').reduce((acc, part) => {
     if (acc && Object.prototype.hasOwnProperty.call(acc, part)) return acc[part];

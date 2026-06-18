@@ -232,10 +232,12 @@ function cacheEls() {
     'currentRoleChip',
     'usersTab',
     'rolePermissionsTab',
+    'whiteLabelConfigTab',
     'notificationSetupTab',
     'workflowTab',
     'usersView',
     'rolePermissionsView',
+    'whiteLabelConfigView',
     'notificationSetupView',
     'workflowView',
     'workflowRulesTbody',
@@ -1129,7 +1131,15 @@ function cacheEls() {
     'freezeForm',
     'freezeStart',
     'freezeEnd',
-    'freezeReset'
+    'freezeReset',
+    'whiteLabelForm',
+    'whiteLabelConfigTabs',
+    'whiteLabelSaveBtn',
+    'whiteLabelCopyBtn',
+    'whiteLabelDownloadBtn',
+    'whiteLabelResetBtn',
+    'whiteLabelExportText',
+    'whiteLabelState'
     ,
   ].forEach(id => (E[id] = document.getElementById(id)));
 }
@@ -1199,7 +1209,8 @@ const UI = {
       { key: 'notificationSetup', tabEl: E.notificationSetupTab, viewEl: E.notificationSetupView },
       { key: 'workflow', tabEl: E.workflowTab, viewEl: E.workflowView },
       { key: 'users', tabEl: E.usersTab, viewEl: E.usersView },
-      { key: 'rolePermissions', tabEl: E.rolePermissionsTab, viewEl: E.rolePermissionsView }
+      { key: 'rolePermissions', tabEl: E.rolePermissionsTab, viewEl: E.rolePermissionsView },
+      { key: 'whiteLabelConfig', tabEl: E.whiteLabelConfigTab, viewEl: E.whiteLabelConfigView }
     ];
   },
   toast(msg, ms = 3500) {

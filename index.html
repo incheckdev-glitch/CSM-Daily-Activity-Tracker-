@@ -363,6 +363,10 @@
                     role="tab" aria-selected="false" aria-controls="rolePermissionsView" style="display:none;">
               <span class="icon" aria-hidden="true">🛡️</span> Role Permissions
             </button>
+            <button id="whiteLabelConfigTab" class="view-tab" data-view="whiteLabelConfig" data-permission-resource="white_label_settings" data-permission-action="list"
+                    role="tab" aria-selected="false" aria-controls="whiteLabelConfigView">
+              <span class="icon" aria-hidden="true">⚙️</span> White Label Config
+            </button>
           </div>
         </aside>
         <div class="content-panels">
@@ -664,6 +668,111 @@ Sample:
             <div id="communicationCentreReplyWrap" class="cc-composer communication-composer"><button id="communicationCentreNewMessagesBtn" class="btn ghost sm cc-new-messages-btn" type="button" style="display:none;">New messages</button><select id="communicationCentreReplyType" class="select"><option value="message">Message</option><option value="internal_note">Internal Note</option></select><textarea id="communicationCentreReplyInput" class="input" rows="2" placeholder="Type your message… Use @name or @role."></textarea><button id="communicationCentreReplyBtn" class="btn">Send</button></div><div id="communicationCentreReplyError" class="muted" style="display:none;padding:0 12px 12px;color:#b42318;">Unable to send reply. Please try again.</div>
           </main>
           <aside id="communicationCentreDrawer" class="card cc-details communication-centre-sidebar communication-thread communication-details-panel conversation-details-panel" data-communication-details="true"><div class="header"><button id="communicationCentreBackToChat" class="btn ghost sm cc-mobile-only" type="button">Chat</button><h3>Details</h3><button id="communicationCentreDrawerClose" class="btn ghost sm" type="button">Hide</button></div><div id="communicationCentreDrawerMeta"></div><div id="communicationCentreParticipants"></div><div id="communicationCentreDrawerActions" class="actions"></div></aside>
+        </div>
+      </section>
+
+      <section id="whiteLabelConfigView" class="view" role="tabpanel" aria-labelledby="whiteLabelConfigTab">
+        <div class="card" aria-label="White label configuration">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+            <div>
+              <h2 style="margin:0 0 6px;">White Label Configuration</h2>
+              <div class="muted">Edit branding, provider details, document identity, PWA assets, and legal links from one visible configuration screen.</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="whiteLabelSaveBtn" class="btn primary sm" type="button">Save preview</button>
+              <button id="whiteLabelCopyBtn" class="btn ghost sm" type="button">Copy config file</button>
+              <button id="whiteLabelDownloadBtn" class="btn ghost sm" type="button">Download config</button>
+              <button id="whiteLabelResetBtn" class="btn ghost sm" type="button">Reset preview</button>
+            </div>
+          </div>
+          <div id="whiteLabelState" class="muted" style="margin-top:10px;">Loaded from white-label.config.js.</div>
+        </div>
+
+        <div class="card" aria-label="White label form tabs">
+          <div id="whiteLabelConfigTabs" class="notification-filter-row" role="tablist" aria-label="White label sections">
+            <button class="chip-btn active" type="button" data-wl-tab="general">General</button>
+            <button class="chip-btn" type="button" data-wl-tab="login">Login</button>
+            <button class="chip-btn" type="button" data-wl-tab="assets">Logos &amp; Colors</button>
+            <button class="chip-btn" type="button" data-wl-tab="provider">Provider</button>
+            <button class="chip-btn" type="button" data-wl-tab="legal">Legal &amp; Bank</button>
+            <button class="chip-btn" type="button" data-wl-tab="export">Export</button>
+          </div>
+
+          <form id="whiteLabelForm" style="margin-top:14px;display:grid;gap:16px;">
+            <section class="white-label-pane" data-wl-pane="general">
+              <div class="user-form-grid">
+                <label><span class="muted">App name</span><input id="wlAppName" class="input" type="text" data-wl-path="appName"></label>
+                <label><span class="muted">Short name</span><input id="wlShortName" class="input" type="text" data-wl-path="shortName"></label>
+                <label><span class="muted">Product name</span><input id="wlProductName" class="input" type="text" data-wl-path="productName"></label>
+                <label><span class="muted">Workspace name</span><input id="wlWorkspaceName" class="input" type="text" data-wl-path="workspaceName"></label>
+                <label><span class="muted">Company name</span><input id="wlCompanyName" class="input" type="text" data-wl-path="companyName"></label>
+                <label><span class="muted">Legal name</span><input id="wlLegalName" class="input" type="text" data-wl-path="legalName"></label>
+                <label><span class="muted">Website / base URL</span><input id="wlWebsite" class="input" type="url" data-wl-path="website"></label>
+                <label><span class="muted">Support email</span><input id="wlSupportEmail" class="input" type="email" data-wl-path="supportEmail"></label>
+                <label><span class="muted">Support phone</span><input id="wlSupportPhone" class="input" type="text" data-wl-path="supportPhone"></label>
+                <label><span class="muted">Brand alt text</span><input id="wlBrandAlt" class="input" type="text" data-wl-path="brandAlt"></label>
+              </div>
+            </section>
+
+            <section class="white-label-pane" data-wl-pane="login" hidden>
+              <div class="user-form-grid">
+                <label><span class="muted">Login eyebrow</span><input class="input" type="text" data-wl-path="login.eyebrow"></label>
+                <label><span class="muted">Login headline</span><input class="input" type="text" data-wl-path="login.headline"></label>
+                <label style="grid-column:1/-1;"><span class="muted">Login description</span><textarea class="input" rows="3" data-wl-path="login.description"></textarea></label>
+                <label><span class="muted">Login hint</span><input class="input" type="text" data-wl-path="login.hint"></label>
+                <label><span class="muted">Small print</span><input class="input" type="text" data-wl-path="login.smallPrint"></label>
+              </div>
+            </section>
+
+            <section class="white-label-pane" data-wl-pane="assets" hidden>
+              <div class="user-form-grid">
+                <label><span class="muted">UI logo path</span><input class="input" type="text" data-wl-path="logos.ui"></label>
+                <label><span class="muted">Document logo path</span><input class="input" type="text" data-wl-path="logos.document"></label>
+                <label><span class="muted">Favicon path</span><input class="input" type="text" data-wl-path="logos.favicon"></label>
+                <label><span class="muted">Apple touch icon</span><input class="input" type="text" data-wl-path="logos.appleTouchIcon"></label>
+                <label><span class="muted">PWA icon 192</span><input class="input" type="text" data-wl-path="logos.icon192"></label>
+                <label><span class="muted">PWA icon 512</span><input class="input" type="text" data-wl-path="logos.icon512"></label>
+                <label><span class="muted">Maskable icon</span><input class="input" type="text" data-wl-path="logos.maskableIcon"></label>
+                <label><span class="muted">Mask SVG</span><input class="input" type="text" data-wl-path="logos.maskIconSvg"></label>
+                <label><span class="muted">Theme color</span><input class="input" type="text" data-wl-path="colors.themeColor"></label>
+                <label><span class="muted">Mask icon color</span><input class="input" type="text" data-wl-path="colors.maskIconColor"></label>
+                <label><span class="muted">Primary color</span><input class="input" type="text" data-wl-path="colors.primary"></label>
+                <label><span class="muted">Accent color</span><input class="input" type="text" data-wl-path="colors.accent"></label>
+              </div>
+            </section>
+
+            <section class="white-label-pane" data-wl-pane="provider" hidden>
+              <div class="user-form-grid">
+                <label><span class="muted">Provider name</span><input class="input" type="text" data-wl-path="providerContact.name"></label>
+                <label><span class="muted">Provider address</span><input class="input" type="text" data-wl-path="providerContact.address"></label>
+                <label><span class="muted">Provider mobile</span><input class="input" type="text" data-wl-path="providerContact.mobile"></label>
+                <label><span class="muted">Provider email</span><input class="input" type="email" data-wl-path="providerContact.email"></label>
+                <label><span class="muted">Primary signatory</span><input class="input" type="text" data-wl-path="providerSignatories.primaryName"></label>
+                <label><span class="muted">Primary title</span><input class="input" type="text" data-wl-path="providerSignatories.primaryTitle"></label>
+                <label><span class="muted">Secondary signatory</span><input class="input" type="text" data-wl-path="providerSignatories.secondaryName"></label>
+                <label><span class="muted">Secondary title</span><input class="input" type="text" data-wl-path="providerSignatories.secondaryTitle"></label>
+              </div>
+            </section>
+
+            <section class="white-label-pane" data-wl-pane="legal" hidden>
+              <div class="user-form-grid">
+                <label><span class="muted">Address</span><input class="input" type="text" data-wl-path="address"></label>
+                <label><span class="muted">Privacy URL</span><input class="input" type="url" data-wl-path="privacyUrl"></label>
+                <label><span class="muted">Terms URL</span><input class="input" type="url" data-wl-path="termsUrl"></label>
+                <label><span class="muted">Bank name</span><input class="input" type="text" data-wl-path="bankDetails.bank_name"></label>
+                <label><span class="muted">Account name</span><input class="input" type="text" data-wl-path="bankDetails.account_name"></label>
+                <label><span class="muted">Account number</span><input class="input" type="text" data-wl-path="bankDetails.account_number"></label>
+                <label><span class="muted">Routing number</span><input class="input" type="text" data-wl-path="bankDetails.routing_number"></label>
+                <label><span class="muted">SWIFT / BIC</span><input class="input" type="text" data-wl-path="bankDetails.swift_bic"></label>
+                <label style="grid-column:1/-1;"><span class="muted">Bank address</span><input class="input" type="text" data-wl-path="bankDetails.bank_address"></label>
+              </div>
+            </section>
+
+            <section class="white-label-pane" data-wl-pane="export" hidden>
+              <div class="muted" style="margin-bottom:8px;">Copy this content into <strong>white-label.config.js</strong> for the real deployment. The Save preview button only stores a browser preview override.</div>
+              <textarea id="whiteLabelExportText" class="input" rows="18" spellcheck="false" style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"></textarea>
+            </section>
+          </form>
         </div>
       </section>
 
@@ -4244,6 +4353,7 @@ Sample:
   <script src="csm-service.js?v=20260605-csm-uuid-update"></script>
   <script src="ai-insights-service.js?v=20260427-allpwa1"></script>
   <script src="ai-assistant.js?v=20260526-ai-assistant-v1"></script>
-  <script src="app.js?v=20260611-direct-communication"></script>
+  <script src="white-label-admin.js?v=20260618-config-tabs1"></script>
+  <script src="app.js?v=20260618-white-label-config-tabs1"></script>
 </body>
 </html>

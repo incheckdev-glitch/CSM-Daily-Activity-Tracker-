@@ -227,6 +227,15 @@ const BASE_PERMISSION_MATRIX = Object.freeze({
     reopen: ['admin','dev','csm','hoo','viewer'],
     manage: ['admin','dev','csm','hoo','viewer'],
     delete: []
+  }),
+  white_label_settings: Object.freeze({
+    view: ['admin', 'dev'],
+    list: ['admin', 'dev'],
+    get: ['admin', 'dev'],
+    save: ['admin', 'dev'],
+    update: ['admin', 'dev'],
+    export: ['admin', 'dev'],
+    manage: ['admin', 'dev']
   })
 });
 
@@ -260,7 +269,8 @@ const Permissions = {
     notificationSetup: [{ resource: 'notification_settings', action: 'list' }],
     workflow: [{ resource: 'workflow', action: 'list' }],
     users: [{ resource: 'users', action: 'list' }],
-    rolePermissions: [{ resource: 'role_permissions', action: 'list' }]
+    rolePermissions: [{ resource: 'role_permissions', action: 'list' }],
+    whiteLabelConfig: [{ resource: 'white_label_settings', action: 'list' }, { resource: 'white_label_settings', action: 'view' }]
   }),
   tabResourceMap: {
     issues: null,
@@ -289,6 +299,7 @@ const Permissions = {
     notificationSetup: 'notification_settings',
     users: 'users',
     rolePermissions: 'role_permissions',
+    whiteLabelConfig: 'white_label_settings',
     workflow: 'workflow'
   },
   state: {
